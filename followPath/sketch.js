@@ -13,8 +13,10 @@ function setup() {
 function draw() {
     background(0);
 
-    let force = vehicle.follow(path);
-    vehicle.applyForce(force);
+     let force = vehicle.follow(path);
+     vehicle.applyForce(force); 
+     // issue when applying the force. error in "undefined reading (copy) in seek. 
+     // has to do with vector vs class."
 
 
     vehicle.edges();

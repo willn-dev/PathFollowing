@@ -1,3 +1,14 @@
+function findProjection(pos, a, b){
+  v1 = p5.Vector.sub(a,pos);
+  v2 = p5.Vector.sub(b,pos);
+
+  v2.normalize();
+  let sp = v1.dot(v2);
+  v2.mult(sp);
+  v2.add(pos);
+  return v2;
+}
+
 class Vehicle{
   constructor(x, y) {
     this.pos = createVector(x,y);
@@ -10,20 +21,36 @@ class Vehicle{
     this.maxForce = 0.4;
   }
 
+
+  
   //path following algorithm
   follow(path){
-    //2min in read craig reynold path following paper
+    let future = this.vel.copy();
+    future.mult(50);
+    future.add(this.pos);
+    fill(255,0,0);
+    noStroke();
+    circle(future.x, future.y, 10);
+
+    //is future on path?
+    let target = findProjection(path.start, future, path.end);
+
+    fill(0,0,255);
+    noStroke();
+    circle(target.x, target.y, 10);
+
+    let dist = p5.Vector.dist(future, target);
+    if(dist > path.radius){
+      return this.seek(target);
+    } else{
+        return createVector(0,0);
+    }
     
-
-
-
-
   }
 
   seek(target, arrival){
 
-    let targetV = target.pos.copy();
-    let force = p5.Vector.sub(targetV, this.pos); //desired path
+    let force = p5.Vector.sub(target, this.pos); //desired path
     let desiredSpeed = this.maxSpeed;
 
     if(arrival){
@@ -52,7 +79,7 @@ class Vehicle{
     let prediction = vehicle.vel.copy();
     prediction.mult(10);
     target.add(prediction);
-    return this.seek({pos: target});
+    return this.seek(target);
   }
 
   flee(predator){
@@ -69,7 +96,8 @@ class Vehicle{
    * divides force by mass, then adds to the objects acceleration
    */
   applyForce(force) {
-    let f = p5.Vector.div(force, this.mass);
+    let f = force.copy();
+    f.div(this.mass);
     this.acc.add(f);
   }
 
