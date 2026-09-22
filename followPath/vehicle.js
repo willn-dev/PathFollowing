@@ -17,8 +17,8 @@ class Vehicle{
 
     this.r = 16;
     this.mass = 1;
-    this.maxSpeed = 6;
-    this.maxForce = 0.4;
+    this.maxSpeed = 4;
+    this.maxForce = 0.1 ;
   }
 
 
@@ -26,18 +26,18 @@ class Vehicle{
   //path following algorithm
   follow(path){
     let future = this.vel.copy();
-    future.mult(50);
+    future.mult(20);
     future.add(this.pos);
     fill(255,0,0);
     noStroke();
-    circle(future.x, future.y, 10);
+   
 
     //is future on path?
     let target = findProjection(path.start, future, path.end);
 
     fill(0,0,255);
     noStroke();
-    circle(target.x, target.y, 10);
+    
 
     let dist = p5.Vector.dist(future, target);
     if(dist > path.radius){
@@ -130,7 +130,7 @@ class Vehicle{
 
   /**
    * blank function for method override
-   */
+   */ 
   onEdgeWrap(){
     
   }

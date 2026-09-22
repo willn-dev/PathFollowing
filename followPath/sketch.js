@@ -2,21 +2,21 @@ let vehicle;
 let path;
 
 function setup() {
-    createCanvas(400, 400);
+    createCanvas(800, 800);
     vehicle = new Vehicle(100,100);
     vehicle.vel.x = 2;
 
-    path = new Path(0,200,400,200);
+    path = new Path(0,400,800,400);
 
 }
 
 function draw() {
     background(0);
 
+    path.end.y = mouseY;
+
      let force = vehicle.follow(path);
      vehicle.applyForce(force); 
-     // issue when applying the force. error in "undefined reading (copy) in seek. 
-     // has to do with vector vs class."
 
 
     vehicle.edges();
