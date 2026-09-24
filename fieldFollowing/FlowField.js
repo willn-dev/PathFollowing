@@ -93,6 +93,4 @@ class FlowField{
 
 }
 
-//need to watch coding train video outlined in my obsidian notes to figure out the 3rd element of the perlin noise and moving it during the sim. 
-
 
