@@ -46,6 +46,24 @@ class FlowField{
   }
 
 
+  show(){ //I needed to reference Shiffmans implementation here. I should draw it out later to 
+    //better understand itt
+    for(let i = 0; i < this.cols; i++){
+      for(let j = 0; j < this.rows; j++){
+
+        let w = width / this.cols; 
+        let h = height / this.rows;
+        let v = this.field[i][j].copy();
+        v.setMag(w * 0.5);
+        let x = i * w + w / 2;
+        let y = j * h + h / 2; 
+        stroke(255);
+        strokeWeight(1);
+        line(x, y, x + v.x, y + v.y);
+      }
+    }
+  }
+
 
  //-------------------------FIELD GENERATION TYPES (not used currently------------------------------------
   randomField(){
@@ -56,12 +74,16 @@ class FlowField{
     }
   }
 
-  perlinField(){
+  perlinFieldMotion(zoff){
     let xoff = 0;
+    //noiseSeed(random(1000));
+
     for(let i = 0; i < this.cols; i++){
       let yoff = 0;
+
       for(let j = 0; j < this.rows; j++){
-        let angle = map(noise(xoff, yoff), 0, 1, 0, TWO_PI);
+        
+        let angle = map(noise(xoff, yoff, zoff), 0, 1, 0, (4 * PI));
         yoff += 0.1; 
         this.field[i][j] = p5.Vector.fromAngle(angle);
       }
@@ -70,3 +92,7 @@ class FlowField{
   }
 
 }
+
+//need to watch coding train video outlined in my obsidian notes to figure out the 3rd element of the perlin noise and moving it during the sim. 
+
+
