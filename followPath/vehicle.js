@@ -1,4 +1,4 @@
-function findProjection(pos, a, b){
+function getNormal(pos, a, b){
   v1 = p5.Vector.sub(a,pos);
   v2 = p5.Vector.sub(b,pos);
 
@@ -28,15 +28,15 @@ class Vehicle{
     let future = this.vel.copy();
     future.mult(20);
     future.add(this.pos);
-    fill(255,0,0);
-    noStroke();
+    /* fill(255,0,0);
+    noStroke(); */
    
 
     //is future on path?
-    let target = findProjection(path.start, future, path.end);
+    let target = getNormal(path.start, future, path.end);
 
-    fill(0,0,255);
-    noStroke();
+    /* fill(0,0,255);
+    noStroke(); */
     
 
     let dist = p5.Vector.dist(future, target);
@@ -47,6 +47,39 @@ class Vehicle{
     }
     
   }
+
+  followMulti(path){
+    let future = this.vel.copy();
+    future.mult(20);
+    future.add(this.pos);
+
+    let target = null;
+    let normal = null;
+    let record = Infinity;
+
+    //look thru all line segments 
+    for(let i = 0; i < path.points.length; i++){
+      let vertexA = path.points[i];
+      let vertexB = path.points[i + 1];
+      
+      //whats the normal point between the line and the vehicle?
+      let normalPoint = getNormal(future, vertexA,vertexB);
+
+      //check if the normal point is between the two vertices
+      // it should be, but what if we run off the end of the track
+      
+      if(normalPoint.x < a.x || normalPoint.x > b.x){
+        //just set the point to be the end of the line segment. 
+        normalPoint = b.copy(); // HERE IS WHERE I LEFT OFF 
+      }
+
+    }
+
+
+
+  }
+
+
 
   seek(target, arrival){
 

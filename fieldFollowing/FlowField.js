@@ -76,8 +76,6 @@ class FlowField{
 
   perlinFieldMotion(zoff){
     let xoff = 0;
-    //noiseSeed(random(1000));
-
     for(let i = 0; i < this.cols; i++){
       let yoff = 0;
 
@@ -90,7 +88,6 @@ class FlowField{
       xoff += 0.1;
     }
   }
-
 }
 
 

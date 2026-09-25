@@ -13,8 +13,6 @@ function setup() {
 function draw() {
     background(0);
 
-    path.end.y = mouseY;
-
      let force = vehicle.follow(path);
      vehicle.applyForce(force); 
 

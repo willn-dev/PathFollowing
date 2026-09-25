@@ -24,5 +24,5 @@ function draw() {
     }
 
     console.log(noise(0.5, 0.5, zoff));
-    zoff += 0.001;
+    zoff += 0.003;
 }
