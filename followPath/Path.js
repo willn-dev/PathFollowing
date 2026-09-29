@@ -2,7 +2,7 @@ class Path{
   constructor(x1,y1,x2,y2){
       this.start = createVector(x1, y1,);
       this.end = createVector(x2,y2);
-      this.radius = 20;
+      this.radius = 15;
 
 
   }
@@ -28,9 +28,7 @@ class MultiPointPath{
   }
 
   addPoint(x,y){
-    /* this.points.push(createVector(x,y)); */
-    let pathPoint = createVector(x,y);
-    this.points.push(pathPoint);
+    this.points.push(createVector(x,y));
   }
 
   show(){
@@ -41,20 +39,17 @@ class MultiPointPath{
     noFill();
 
     beginShape();
-      for(let pathpoint of this.points){
+      for(let pathPoint of this.points){
         vertex(pathPoint.x, pathPoint.y,);
       }
     endShape();
-
-
 
     //center line. 
     stroke(255);
     strokeWeight(1);
     noFill();
-
     beginShape();
-      for(let pathpoint of this.points){
+      for(let pathPoint of this.points){
         vertex(pathPoint.x, pathPoint.y,);
       }
     endShape();

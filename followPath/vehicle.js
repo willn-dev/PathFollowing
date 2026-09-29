@@ -1,82 +1,67 @@
-function getNormal(pos, a, b){
-  v1 = p5.Vector.sub(a,pos);
-  v2 = p5.Vector.sub(b,pos);
+function getNormal(start, a, b){
+  v1 = p5.Vector.sub(a,start);
+  v2 = p5.Vector.sub(b,start);
 
   v2.normalize();
   let sp = v1.dot(v2);
   v2.mult(sp);
-  v2.add(pos);
+  v2.add(start);
   return v2;
 }
 
 class Vehicle{
   constructor(x, y) {
     this.pos = createVector(x,y);
-    this.vel = createVector(0,0);
+    this.vel = createVector(2,0);
     this.acc = createVector(0, 0);
 
     this.r = 16;
     this.mass = 1;
-    this.maxSpeed = 4;
+    this.maxSpeed = 3;
     this.maxForce = 0.1 ;
   }
 
 
-  
-  //path following algorithm
-  follow(path){
-    let future = this.vel.copy();
-    future.mult(20);
-    future.add(this.pos);
-    /* fill(255,0,0);
-    noStroke(); */
-   
-
-    //is future on path?
-    let target = getNormal(path.start, future, path.end);
-
-    /* fill(0,0,255);
-    noStroke(); */
-    
-
-    let dist = p5.Vector.dist(future, target);
-    if(dist > path.radius){
-      return this.seek(target);
-    } else{
-        return createVector(0,0);
-    }
-    
-  }
-
   followMulti(path){
     let future = this.vel.copy();
-    future.mult(20);
+    future.mult(30);
     future.add(this.pos);
+
+    fill(0,255,0);
+    circle(future.x, future.y, 3);
 
     let target = null;
     let normal = null;
     let record = Infinity;
 
     //look thru all line segments 
-    for(let i = 0; i < path.points.length; i++){
+    for(let i = 0; i < path.points.length -1; i++){
       let vertexA = path.points[i];
       let vertexB = path.points[i + 1];
       
       //whats the normal point between the line and the vehicle?
-      let normalPoint = getNormal(future, vertexA,vertexB);
+      let normalPoint = getNormal(vertexA, future,vertexB);
 
       //check if the normal point is between the two vertices
-      // it should be, but what if we run off the end of the track
-      
-      if(normalPoint.x < a.x || normalPoint.x > b.x){
-        //just set the point to be the end of the line segment. 
-        normalPoint = b.copy(); // HERE IS WHERE I LEFT OFF 
+      if(normalPoint.x < vertexA.x || normalPoint.x > vertexB.x){
+        // if we cant find a normal point on the line, just set it to the end of the segment
+        normalPoint = vertexB.copy(); 
+      }
+
+      let distance = p5.Vector.dist(future, normalPoint);
+      if (distance < record){
+        record = distance;
+        normal = normalPoint;
+        target = normalPoint.copy();
+        let dir = p5.Vector.sub(vertexA,vertexB);
+        dir.setMag(10);
+        target.add(dir);
       }
 
     }
-
-
-
+      if(record > path.radius && target !=null){
+        return this.seek(target);
+      } else {return createVector(0,0);}
   }
 
 
