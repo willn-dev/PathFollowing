@@ -10,15 +10,15 @@ function getNormal(start, a, b){
 }
 
 class Vehicle{
-  constructor(x, y) {
+  constructor(x, y, ms, mf) {
     this.pos = createVector(x,y);
     this.vel = createVector(2,0);
     this.acc = createVector(0, 0);
 
-    this.r = 16;
+    this.r = 8;
     this.mass = 1;
-    this.maxSpeed = 3;
-    this.maxForce = 0.1 ;
+    this.maxSpeed = ms || 4;
+    this.maxForce = mf || 0.1 ;
   }
 
 
@@ -26,9 +26,6 @@ class Vehicle{
     let future = this.vel.copy();
     future.mult(30);
     future.add(this.pos);
-
-    fill(0,255,0);
-    circle(future.x, future.y, 3);
 
     let target = null;
     let normal = null;
@@ -53,15 +50,33 @@ class Vehicle{
         record = distance;
         normal = normalPoint;
         target = normalPoint.copy();
-        let dir = p5.Vector.sub(vertexA,vertexB);
+        let dir = p5.Vector.sub(vertexB,vertexA);
         dir.setMag(10);
         target.add(dir);
       }
 
     }
       if(record > path.radius && target !=null){
-        return this.seek(target);
-      } else {return createVector(0,0);}
+        this.seek(target);
+      }/*  else {return createVector(0,0);} */
+
+    //draw points
+    stroke(0,100,255);
+    strokeWeight(1);
+    fill(0,100,255);  //future vel
+    line(this.pos.x,this.pos.y, future.x, future.y);
+    noStroke();
+    circle(future.x, future.y, 5);
+
+    stroke(0,255,0);
+    fill(0,255,0);
+    line(future.x,future.y, normal.x,normal.y);
+    noStroke();
+    circle(normal.x,normal.y,4);
+
+    fill(255,155,155);
+    circle(target.x,target.y,5);
+
   }
 
 
@@ -84,7 +99,8 @@ class Vehicle{
     force.setMag(desiredSpeed); 
     force.sub(this.vel);    //subtract current velocity and limit the acting force to "maxForce"
     force.limit(this.maxForce);
-    return(force);
+    /* return(force); */
+    this.applyForce(force);
   }
 
   arrive(target){
@@ -114,9 +130,9 @@ class Vehicle{
    * divides force by mass, then adds to the objects acceleration
    */
   applyForce(force) {
-    let f = force.copy();
-    f.div(this.mass);
-    this.acc.add(f);
+/*     let f = force.copy();
+    f.div(this.mass); */
+    this.acc.add(force);
   }
 
     /**

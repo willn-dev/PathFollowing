@@ -1,4 +1,4 @@
-let vehicle;
+let vehicles = [];
 let path;
 
 function setup() {
@@ -9,20 +9,22 @@ function setup() {
   path.addPoint(100, 50);
   path.addPoint(400, 200);
   path.addPoint(width + 20, height / 2);
-    vehicle = new Vehicle(100,100);
-    vehicle.vel.x = 2;
+  
 
+  vehicles.push(new Vehicle(0,height/2, 2, 0.04));
+  vehicles.push(new Vehicle(0,height/2, 3, 0.1));
 
 }
 
 function draw() {
     background(0);
-
     path.show();
 
-    let force = vehicle.followMulti(path);
-    vehicle.applyForce(force); 
-    vehicle.edges();
-    vehicle.update();
-    vehicle.show();
+    for(let vehicle of vehicles){
+      vehicle.followMulti(path);
+      vehicle.edges();
+      vehicle.update();
+      vehicle.show();
+    }
+  
 }
