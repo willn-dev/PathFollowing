@@ -12,8 +12,7 @@ function draw() {
     background(100);
     let target = createVector(mouseX,mouseY);
     for(let vehicle of vehicles){
-        vehicle.seek(target);
-        vehicle.separate(vehicles);
+        vehicle.applyBehaviors(vehicles);
         vehicle.update();
         vehicle.show();
     }

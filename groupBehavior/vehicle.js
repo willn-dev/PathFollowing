@@ -99,10 +99,9 @@ class Vehicle{
     force.setMag(desiredSpeed); 
     force.sub(this.vel);    //subtract current velocity and limit the acting force to "maxForce"
     force.limit(this.maxForce);
-    /* return(force); */
-    this.applyForce(force);
+    return(force); 
+    /* this.applyForce(force); */
   }
-
 
   separate(vehicles){
     //Take array of vehicles, and ensure they dont collide.
@@ -113,10 +112,9 @@ class Vehicle{
     for(let other of vehicles){
       let distance = p5.Vector.dist(this.pos, other.pos);
 
-      if(this != other && distance < desiredDistance){
+      if(this != other && distance < desiredDistance && distance > 0){
         let fleeVector = p5.Vector.sub(this.pos, other.pos);
-        fleeVector.setMag(1 / distance); //setting a unit vector then dividing by the other vehicles distance. 
-                                              // the magnitude is inversely proportional to the distance.
+        fleeVector.setMag(1 / distance);
         sumOfFlee.add(fleeVector);
         count++;
       }
@@ -129,10 +127,15 @@ class Vehicle{
       let steering = p5.Vector.sub(sumOfFlee, this.vel);
       steering.limit(this.maxForce);
 
-      this.applyForce(steering);
+      /* this.applyForce(steering); */
+      return steering;
     }
+    return createVector(0,0);
   }
 
+  cohere(vehicles){
+    //if beyond a certain distance, get closer.
+  }
 
   arrive(target){
     return this.seek(target, true);
@@ -155,6 +158,14 @@ class Vehicle{
     let pursuit = this.pursue(vehicle);
     pursuit.mult(-1);
     return pursuit;
+  }
+
+  applyBehaviors(vehicles){
+    let separation = this.separate(vehicles);
+    let seeking = this.seek(createVector(mouseX, mouseY));
+
+    this.applyForce(separation);
+    this.applyForce(seeking);
   }
 
   applyForce(force) {
