@@ -58,7 +58,7 @@ class Vehicle{
     }
       if(record > path.radius && target !=null){
         this.seek(target);
-      }/*  else {return createVector(0,0);} */
+      }
 
     //draw points
     stroke(0,100,255);
@@ -164,6 +164,9 @@ class Vehicle{
     let separation = this.separate(vehicles);
     let seeking = this.seek(createVector(mouseX, mouseY));
 
+    /* separation.mult(1.5);
+    seeking.mult(0.5); */
+
     this.applyForce(separation);
     this.applyForce(seeking);
   }
@@ -203,6 +206,7 @@ class Vehicle{
    * blank function for method override
    */ 
   onEdgeWrap(){
+    //do I even still need this? I dont rememeber.
   }
 
 
@@ -225,6 +229,7 @@ class Vehicle{
   }
 }
 
+//-------------------------------------------------------------
 class Target extends Vehicle{
   constructor(x,y){
     super(x,y);
