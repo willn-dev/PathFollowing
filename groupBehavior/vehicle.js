@@ -164,8 +164,8 @@ class Vehicle{
     let separation = this.separate(vehicles);
     let seeking = this.seek(createVector(mouseX, mouseY));
 
-    /* separation.mult(1.5);
-    seeking.mult(0.5); */
+/*     separation.mult(0.5);
+    seeking.mult(1.5); */
 
     this.applyForce(separation);
     this.applyForce(seeking);
@@ -245,3 +245,59 @@ class Target extends Vehicle{
     ellipse(this.pos.x, this.pos.y, 16);
   }
 }
+
+//--------BOIDS-----------------------------------------------------
+
+class Boids extends Vehicle{
+  constructor(x, y, ms, mf){
+    super(x,y,ms,mf);
+  }
+
+  flock(boids){
+  //manage a flock by calling all its actions in one function. 
+    let separation = this.separate(boids);
+    let alignment = this.align(boids);
+    let coherance = this.cohere(boids);
+
+    separation.mult(1);
+    alignment.mult(1); //adjust weights of desires. 
+    coherance.mult(1);
+
+    this.applyForce(separation);
+    this.applyForce(alignment);
+    this.applyForce(coherance);
+  }
+
+  align(boids){
+    // find average vectors of all in influence, and return said force. 
+    let visionField = this.r * 4;
+    let sumVectors = p5.Vector(0,0);
+    let count = 0;
+
+    for(other of boids){
+      distanceBetween = p5.Vector.dist(this.pos, other.pos);
+
+      if(this != other && distanceBetween < visionField){
+        let desiredVector = p5.Vector.sub(this.pos, other.pos);
+        sumVectors.add(other.vel);
+        count++;
+      }
+    }
+
+    if(count > 0){
+      sumVectors.setMag(this.maxSpeed);
+      let steer = p5.Vector.sub(sumVectors, this.vel);
+      steer.limit(this.maxForce);
+      return steer;
+    } else {
+      return createVector(0,0);
+    }
+  }
+
+  cohere(boids){
+    //TODO
+    
+  }
+
+}
+
