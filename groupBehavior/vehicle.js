@@ -15,10 +15,10 @@ class Vehicle{
     this.vel = createVector(2,0);
     this.acc = createVector(0, 0);
 
-    this.r = 8;
+    this.r = 3.0;
     this.mass = 1;
-    this.maxSpeed = ms || 4;
-    this.maxForce = mf || 0.1 ;
+    this.maxSpeed = ms || 3;
+    this.maxForce = mf || 0.05 ;
   }
 
 
@@ -105,7 +105,7 @@ class Vehicle{
 
   separate(vehicles){
     //Take array of vehicles, and ensure they dont collide.
-    let desiredDistance = this.r * 4; 
+    let desiredDistance = 25; 
     let sumOfFlee = createVector(0,0); 
     let count = 0;
 
@@ -131,10 +131,6 @@ class Vehicle{
       return steering;
     }
     return createVector(0,0);
-  }
-
-  cohere(vehicles){
-    //if beyond a certain distance, get closer.
   }
 
   arrive(target){
@@ -163,9 +159,6 @@ class Vehicle{
   applyBehaviors(vehicles){
     let separation = this.separate(vehicles);
     let seeking = this.seek(createVector(mouseX, mouseY));
-
-/*     separation.mult(0.5);
-    seeking.mult(1.5); */
 
     this.applyForce(separation);
     this.applyForce(seeking);
@@ -251,34 +244,20 @@ class Target extends Vehicle{
 class Boids extends Vehicle{
   constructor(x, y, ms, mf){
     super(x,y,ms,mf);
-  }
-
-  flock(boids){
-  //manage a flock by calling all its actions in one function. 
-    let separation = this.separate(boids);
-    let alignment = this.align(boids);
-    let coherance = this.cohere(boids);
-
-    separation.mult(1);
-    alignment.mult(1); //adjust weights of desires. 
-    coherance.mult(1);
-
-    this.applyForce(separation);
-    this.applyForce(alignment);
-    this.applyForce(coherance);
+    this.acc = createVector(0,0);
+    this.vel = createVector(random(-1,1),random(-1,1));
   }
 
   align(boids){
     // find average vectors of all in influence, and return said force. 
-    let visionField = this.r * 4;
-    let sumVectors = p5.Vector(0,0);
+    let visionField = 50;
+    let sumVectors = createVector(0,0);
     let count = 0;
 
-    for(other of boids){
-      distanceBetween = p5.Vector.dist(this.pos, other.pos);
+    for(let other of boids){
+      let distanceBetween = p5.Vector.dist(this.pos, other.pos);
 
       if(this != other && distanceBetween < visionField){
-        let desiredVector = p5.Vector.sub(this.pos, other.pos);
         sumVectors.add(other.vel);
         count++;
       }
@@ -294,10 +273,45 @@ class Boids extends Vehicle{
     }
   }
 
+  applyBehaviors(boids){
+    let separation = this.separate(boids);
+    let alignment = this.align(boids);
+    let cohereance = this.cohere(boids);
+
+    separation.mult(1.5);
+    alignment.mult(1);
+    cohereance.mult(1);
+
+    this.applyForce(separation);
+    this.applyForce(alignment);
+    this.applyForce(cohereance);
+  }
+  
+
   cohere(boids){
-    //TODO
-    
+    let visionField = 70;
+    let centerpoint = createVector(0,0);
+    let count = 0;
+ 
+    for(let other of boids){
+      let distance = p5.Vector.dist(this.pos, other.pos);
+      if(this != other && distance < visionField){
+        centerpoint.add(other.pos);
+        count++;
+      }
+
+      if(count > 0){
+        centerpoint.div(count);
+        return this.seek(centerpoint);
+      } else{return createVector(0,0);}
+    }
   }
 
+  run(boids){
+    this.applyBehaviors(boids);
+    this.update();
+    this.edges();
+    this.show();
+  }
 }
 
