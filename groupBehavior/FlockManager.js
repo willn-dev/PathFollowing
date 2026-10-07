@@ -1,15 +1,15 @@
 class Flock{
   constructor(){
-   this.flock = [];
+   this.boids = [];
   }
 
   add(boid){
-    this.flock.push(boid);
+    this.boids.push(boid);
   }
 
   run(){
-    for(let boid of this.flock){
-        boid.run(this.flock);
+    for(let boid of this.boids){
+        boid.run(this.boids);
     }
 
   }

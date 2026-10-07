@@ -308,7 +308,20 @@ class Boids extends Vehicle{
   }
 
   run(boids){
-    this.applyBehaviors(boids);
+
+    let column = floor(this.pos.x / resolution);
+    let row = floor(this.pos.y / resolution);
+
+    column = constrain(column, 0, cols -1);
+    row = constrain(row,0,rows - 1);
+
+
+    let neighbors = [];
+
+    neighbors = neighbors.concat(grid[column][row]);
+
+
+    this.applyBehaviors(neighbors);
     this.update();
     this.edges();
     this.show();
